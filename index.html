@@ -270,7 +270,7 @@
 
         // Setelah loading selesai
         setTimeout(() => {
-          loading.innerHTML = "<div>Selamat datang di hatiku, " + name + " 💘</div>";
+          window.location.href = "love.html";
         }, 8000);
       } else {
         const randomMsg = wrongMessages[Math.floor(Math.random() * wrongMessages.length)];
@@ -283,3 +283,4 @@
   </script>
 </body>
 </html>
+
