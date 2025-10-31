@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Untuk Kamu 💖</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #ffb3c6, #ffc3d6, #ffd1dc);
+      font-family: "Poppins", sans-serif;
+      color: #fff;
+      overflow: hidden;
+      background-size: 200% 200%;
+      animation: moveBg 6s infinite alternate ease-in-out;
+      text-align: center;
+      padding: 20px;
+    }
+
+    @keyframes moveBg {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    h1 { font-size: 26px; margin-bottom: 15px; animation: fadeIn 1.5s ease; line-height: 1.3; }
+    p { font-size: 16px; text-align: center; margin: 0 15px; animation: fadeIn 2.5s ease; line-height: 1.6; }
+
+    button {
+      margin-top: 25px;
+      padding: 12px 25px;
+      background: linear-gradient(90deg, #ff6b9f, #ff9fc2);
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s ease;
+    }
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(255, 107, 159, 0.3);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .popup {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(5px);
+      z-index: 10;
+      animation: fadeIn 0.5s ease;
+      padding: 20px;
+    }
+
+    .popup-content {
+      background: rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 25px 20px;
+      text-align: center;
+      max-width: 320px;
+      width: 100%;
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      font-size: 15px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .popup-content h2 { margin-bottom: 15px; font-size: 22px; line-height: 1.4; }
+
+    .heart-fall {
+      position: fixed;
+      bottom: 0;
+      color: #ffdde1;
+      font-size: 18px;
+      opacity: 0.8;
+      animation: fall 4s linear forwards;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* 💕 Efek confetti love naik */
+    .confetti {
+      position: fixed;
+      bottom: -20px;
+      font-size: 20px;
+      opacity: 0.9;
+      animation: rise 3s linear forwards;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    @keyframes rise {
+      0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-100vh) scale(1.5) rotate(720deg); opacity: 0; }
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 22px; }
+      p { font-size: 14px; margin: 0 10px; }
+      button { font-size: 15px; padding: 10px 22px; }
+      .popup-content { font-size: 14px; padding: 20px 15px; }
+      .popup-content h2 { font-size: 20px; }
+    }
+
+    /* Tombol "tidak" efek kabur */
+    #noBtn {
+      transition: all 0.3s ease;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hai wanita cantik yang ada di dunia ini 💕</h1>
+  <p>Aku cuma mau bilang... kamu adalah wanita tercantik yang pernah aku lihat di dunia ini 😘</p>
+  <button id="loveBtn">Buka Pesan 💌</button>
+
+  <!-- Popup 1–4 -->
+  <div class="popup" id="popup1">
+    <div class="popup-content">
+      <h2>💖 Untuk Kamu 💖</h2>
+      <p>Kamu tau ga? saat pertama kali aku berkenalan denganmu perasaan aku seneng banget karena bisa berkenalan dengan wanita secantik kmu 😳</p>
+      <button onclick="nextPopup(1)">Lanjut 💫</button>
+    </div>
+  </div>
+
+  <div class="popup" id="popup2">
+    <div class="popup-content">
+      <h2>✨Untuk Kamu ✨</h2>
+      <p>Saat itu juga aku menyadari bahwa bidadari tidak hanya ada di surga, tetapi ada di dunia nyata yg berwujud manusia seperti kamu 😍</p>
+      <button onclick="prevPopup(2)">Kembali ⬅️</button>
+      <button onclick="nextPopup(2)">Lanjut 💫</button>
+    </div>
+  </div>
+
+  <div class="popup" id="popup3">
+    <div class="popup-content">
+      <h2>🌹 Untuk Kamu 🌹</h2>
+      <p>Tapi aku sadar, apakah manusia biasa sepertiku bisa mendapatkan hati bidadari tak bersayap sepertimu? 💕</p>
+      <button onclick="prevPopup(3)">Kembali ⬅️</button>
+      <button onclick="nextPopup(3)">Lanjut 💫</button>
+    </div>
+  </div>
+
+  <div class="popup" id="popup4">
+    <div class="popup-content">
+      <h2>💌 Satu lagi... 💌</h2>
+      <p>Jika itu tidak mustahil untuk mendapatkan hatimu, bolehkah aku mengatakan sesuatu yang ada dalam hatiku? 😚</p>
+      <button onclick="prevPopup(4)">Kembali ⬅️</button>
+      <button onclick="nextPopup(4)">Lanjut 💫</button>
+    </div>
+  </div>
+
+  <!-- Popup 5 -->
+  <div class="popup" id="popup5">
+    <div class="popup-content">
+      <h2>❤️ Untuk wanita tercinta ❤️</h2>
+      <p>Mau gak kamu jadi pasangan aku? 🥰</p>
+      <button id="yesBtn">Iyaa 💕</button>
+      <button id="noBtn">Tidak 😢</button>
+      <button onclick="prevPopup(5)">Kembali ⬅️</button>
+    </div>
+  </div>
+
+  <!-- Popup respon umum -->
+  <div class="popup" id="notifPopup">
+    <div class="popup-content" id="notifContent">
+      <h2>💌 Notifikasi 💌</h2>
+      <p id="notifText">Pesan</p>
+      <button id="notifClose">Oke 💞</button>
+    </div>
+  </div>
+
+  <!-- Popup terakhir -->
+  <div class="popup" id="popupLast">
+    <div class="popup-content">
+      <h2>💞 Aku Senang Banget 💞</h2>
+      <p>Aku senang kamu mau 💞<br>Janji ya, jangan pernah bosan sama aku 😚</p>
+      <button onclick="closeAll()">Tutup 💫</button>
+    </div>
+  </div>
+
+  <script>
+    const btn = document.getElementById("loveBtn");
+    const popups = [
+      document.getElementById("popup1"),
+      document.getElementById("popup2"),
+      document.getElementById("popup3"),
+      document.getElementById("popup4"),
+      document.getElementById("popup5")
+    ];
+    const notifPopup = document.getElementById("notifPopup");
+    const notifText = document.getElementById("notifText");
+    const notifClose = document.getElementById("notifClose");
+    const popupLast = document.getElementById("popupLast");
+
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+
+    let attempt = 0;
+    let showNoPopupOnce = false;
+
+    btn.addEventListener("click", () => {
+      popups[0].style.display = "flex";
+    });
+
+    function nextPopup(index) {
+      popups[index - 1].style.display = "none";
+      popups[index].style.display = "flex";
+    }
+
+    function prevPopup(index) {
+      popups[index - 1].style.display = "none";
+      popups[index - 2].style.display = "flex";
+    }
+
+    // Efek confetti love
+    function createConfetti() {
+      for (let i = 0; i < 25; i++) {
+        const confetti = document.createElement("div");
+        confetti.classList.add("confetti");
+        confetti.textContent = "💖";
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.fontSize = (14 + Math.random() * 12) + "px";
+        confetti.style.animationDuration = (2 + Math.random() * 2) + "s";
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 3000);
+      }
+    }
+
+    yesBtn.addEventListener("click", () => {
+      popups[4].style.display = "none";
+      notifText.textContent = "Yeeey! 😍 Sekarang kita resmi jadi pasangan 💞";
+      notifPopup.style.display = "flex";
+      notifClose.textContent = "Hehe 🥰";
+      createConfetti();
+    });
+
+    notifClose.addEventListener("click", () => {
+      if (notifClose.textContent === "Hehe 🥰") {
+        notifPopup.style.display = "none";
+        popupLast.style.display = "flex";
+      } else {
+        notifPopup.style.display = "none";
+        if (showNoPopupOnce) popups[4].style.display = "flex";
+      }
+    });
+
+    noBtn.addEventListener("click", () => {
+      if (!showNoPopupOnce) {
+        popups[4].style.display = "none";
+        notifText.innerHTML = "Hmm... kamu yakin nggak mau jadi pasangan aku? 😢";
+        notifPopup.style.display = "flex";
+        notifClose.textContent = "Coba lagi 💫";
+        showNoPopupOnce = true;
+      }
+    });
+
+    noBtn.addEventListener("mouseover", () => {
+      if (showNoPopupOnce) {
+        attempt++;
+        noBtn.style.opacity = 1 - attempt * 0.3;
+        noBtn.style.transform = `translate(${Math.random() * 100 - 50}px, ${Math.random() * 50 - 25}px)`;
+        if (attempt >= 3) {
+          noBtn.disabled = true;
+          noBtn.textContent = "Tidak bisa kabur 😜";
+        }
+      }
+    });
+
+    function closeAll() {
+      document.querySelectorAll(".popup").forEach(p => p.style.display = "none");
+    }
+
+    // Efek hati jatuh
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart-fall");
+      heart.textContent = "💖";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = (15 + Math.random() * 10) + "px";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 4000);
+    }
+    setInterval(createHeart, 700);
+  </script>
+</body>
+</html>
