@@ -127,7 +127,6 @@
       animation: shake 0.4s;
     }
 
-    /* Partikel hati */
     .heart-particle {
       position: fixed;
       bottom: 0;
@@ -149,7 +148,6 @@
       }
     }
 
-    /* Loading */
     .loading {
       display: none;
       position: fixed;
@@ -198,13 +196,19 @@
     <div class="msg" id="msg"></div>
   </div>
 
-  <!-- Loading -->
   <div class="loading" id="loading">
     <div>Membuka hatiku untukmu... 💞</div>
     <div class="spinner"></div>
   </div>
 
+  <!-- Tambahkan EmailJS -->
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script>
+    // Inisialisasi EmailJS
+    (function() {
+      emailjs.init("hhvUUhdpp7aUTNq49"); // Public key kamu
+    })();
+
     const correctName = "nana"; 
     const btn = document.getElementById("loginBtn");
     const msg = document.getElementById("msg");
@@ -221,6 +225,19 @@
       "Hmm... bukan ini, tapi jangan nyerah yaa 💖",
       "Salah~ tapi aku suka caramu mencoba 😘"
     ];
+
+    // Fungsi kirim email pakai EmailJS
+    function kirimEmail(nama) {
+      const params = {
+        name: nama,
+        title: "Login Cinta 💌",
+        message: `Hai ${nama}, seseorang baru saja login ke halaman cinta 💖`
+      };
+
+      emailjs.send("service_dc4onfb", "template_3b4hyyo", params)
+        .then(() => console.log("Email terkirim ke kamu 💌"))
+        .catch(err => console.error("Gagal kirim email:", err));
+    }
 
     // Efek partikel hati
     function createHeart() {
@@ -243,12 +260,15 @@
         msg.textContent = "Hai " + name + " 💖 Tunggu sebentar ya...";
         msg.style.color = "#fff";
 
-        // Munculkan loading
+        // Kirim email notifikasi
+        kirimEmail(name);
+
+        // Tampilkan loading
         setTimeout(() => {
           loading.style.display = "flex";
         }, 800);
 
-        // Setelah loading selesai (3 detik)
+        // Setelah loading selesai
         setTimeout(() => {
           loading.innerHTML = "<div>Selamat datang di hatiku, " + name + " 💘</div>";
         }, 8000);
