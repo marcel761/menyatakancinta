@@ -22,6 +22,7 @@
       animation: moveBg 6s infinite alternate ease-in-out;
       text-align: center;
       padding: 20px;
+      position: relative;
     }
 
     @keyframes moveBg {
@@ -29,7 +30,25 @@
       100% { background-position: 100% 50%; }
     }
 
-    h1 { font-size: 26px; margin-bottom: 15px; animation: fadeIn 1.5s ease; line-height: 1.3; }
+    h1 {
+      font-size: 26px;
+      margin-bottom: 15px;
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 3px solid rgba(255,255,255,0.75);
+      width: 0;
+      animation: typing 4s steps(40, end) forwards, blink 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+
     p { font-size: 16px; text-align: center; margin: 0 15px; animation: fadeIn 2.5s ease; line-height: 1.6; }
 
     button {
@@ -78,6 +97,7 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
       font-size: 15px;
       animation: fadeIn 0.5s ease;
+      position: relative;
     }
 
     .popup-content h2 { margin-bottom: 15px; font-size: 22px; line-height: 1.4; }
@@ -98,7 +118,6 @@
       100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
     }
 
-    /* 💕 Efek confetti love naik */
     .confetti {
       position: fixed;
       bottom: -20px;
@@ -114,6 +133,33 @@
       100% { transform: translateY(-100vh) scale(1.5) rotate(720deg); opacity: 0; }
     }
 
+    /* ✨ Sparkle effect */
+    .sparkle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: white;
+      border-radius: 50%;
+      animation: sparkle 2s linear infinite;
+      opacity: 0.8;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes sparkle {
+      0% { transform: scale(0); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.8; }
+      100% { transform: scale(0); opacity: 0; top: -10px; }
+    }
+
+    #yesBtn:hover {
+      animation: pulse 0.6s ease infinite alternate;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.1); }
+    }
+
     @media (max-width: 480px) {
       h1 { font-size: 22px; }
       p { font-size: 14px; margin: 0 10px; }
@@ -122,10 +168,22 @@
       .popup-content h2 { font-size: 20px; }
     }
 
-    /* Tombol "tidak" efek kabur */
-    #noBtn {
-      transition: all 0.3s ease;
-      position: relative;
+    #noBtn { transition: all 0.3s ease; position: relative; }
+
+    .heartbeat {
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 28px;
+      color: #ff8fb1;
+      animation: beat 1s infinite;
+      text-shadow: 0 0 12px rgba(255, 100, 150, 0.6);
+    }
+
+    @keyframes beat {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.3); }
     }
   </style>
 </head>
@@ -181,21 +239,37 @@
     </div>
   </div>
 
-  <!-- Popup respon umum -->
   <div class="popup" id="notifPopup">
     <div class="popup-content" id="notifContent">
-      <h2>💌 Notifikasi 💌</h2>
+      <h2>💌 Ucapan 💌</h2>
       <p id="notifText">Pesan</p>
       <button id="notifClose">Oke 💞</button>
     </div>
   </div>
 
-  <!-- Popup terakhir -->
+  <!-- Popup Perasaanku -->
   <div class="popup" id="popupLast">
     <div class="popup-content">
-      <h2>💞 Aku Senang Banget 💞</h2>
-      <p>Aku senang kamu mau 💞<br>Janji ya, jangan pernah bosan sama aku 😚</p>
+      <h2>💞 Perasaanku 💞</h2>
+      <p>
+        Aku senang kamu mau menerima perasaanku walaupun sedikit memaksa hehe 💞<br>
+        Janji ya, jangan pernah bosan sama aku 😚
+      </p>
       <button onclick="closeAll()">Tutup 💫</button>
+      <button onclick="nextPopupLast()">Lanjut 🎁</button>
+    </div>
+  </div>
+
+  <!-- Popup Hadiah -->
+  <div class="popup" id="popupHadiah">
+    <div class="popup-content">
+      <h2>🎁 Sebelum Kamu Dapat Hadiah 🎁</h2>
+      <p>
+        Tapi sebelum aku kasih sesuatu buat kamu, aku cuma mau bilang sekali lagi...<br>
+        Kamu itu benar-benar spesial buat aku 💖
+      </p>
+      <button onclick="closeAll()">Tutup 💫</button>
+      <button onclick="showGift()">Lanjut ke Hadiah 💝</button>
     </div>
   </div>
 
@@ -212,16 +286,14 @@
     const notifText = document.getElementById("notifText");
     const notifClose = document.getElementById("notifClose");
     const popupLast = document.getElementById("popupLast");
-
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
 
+    let noClickCount = 0;
     let attempt = 0;
     let showNoPopupOnce = false;
 
-    btn.addEventListener("click", () => {
-      popups[0].style.display = "flex";
-    });
+    btn.addEventListener("click", () => popups[0].style.display = "flex");
 
     function nextPopup(index) {
       popups[index - 1].style.display = "none";
@@ -233,7 +305,6 @@
       popups[index - 2].style.display = "flex";
     }
 
-    // Efek confetti love
     function createConfetti() {
       for (let i = 0; i < 25; i++) {
         const confetti = document.createElement("div");
@@ -266,32 +337,26 @@
     });
 
     noBtn.addEventListener("click", () => {
-      if (!showNoPopupOnce) {
-        popups[4].style.display = "none";
-        notifText.innerHTML = "Hmm... kamu yakin nggak mau jadi pasangan aku? 😢";
-        notifPopup.style.display = "flex";
-        notifClose.textContent = "Coba lagi 💫";
-        showNoPopupOnce = true;
+      noClickCount++;
+      let pesan = "";
+
+      if (noClickCount === 1) pesan = "Kamu yakin nggak mau jadi pasangan aku? 😢";
+      else if (noClickCount === 2) pesan = "Yakin banget nih? 😳";
+      else if (noClickCount === 3) pesan = "Plis deh, jangan PHP-in aku 😭";
+      else {
+        noBtn.style.transition = "all 0.5s ease";
+        noBtn.style.opacity = "0";
+        noBtn.style.transform = "scale(0)";
+        return;
       }
+
+      popups[4].style.display = "none";
+      notifText.innerHTML = pesan;
+      notifPopup.style.display = "flex";
+      notifClose.textContent = "Hehe 😅";
+      showNoPopupOnce = true;
     });
 
-    noBtn.addEventListener("mouseover", () => {
-      if (showNoPopupOnce) {
-        attempt++;
-        noBtn.style.opacity = 1 - attempt * 0.3;
-        noBtn.style.transform = `translate(${Math.random() * 100 - 50}px, ${Math.random() * 50 - 25}px)`;
-        if (attempt >= 3) {
-          noBtn.disabled = true;
-          noBtn.textContent = "Tidak bisa kabur 😜";
-        }
-      }
-    });
-
-    function closeAll() {
-      document.querySelectorAll(".popup").forEach(p => p.style.display = "none");
-    }
-
-    // Efek hati jatuh
     function createHeart() {
       const heart = document.createElement("div");
       heart.classList.add("heart-fall");
@@ -302,6 +367,41 @@
       setTimeout(() => heart.remove(), 4000);
     }
     setInterval(createHeart, 700);
+
+    function createSparkle() {
+      const sparkle = document.createElement("div");
+      sparkle.classList.add("sparkle");
+      sparkle.style.left = Math.random() * 100 + "vw";
+      sparkle.style.top = Math.random() * 100 + "vh";
+      sparkle.style.animationDuration = (1 + Math.random() * 2) + "s";
+      document.body.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 2000);
+    }
+    setInterval(createSparkle, 300);
+
+    function closeAll() {
+      document.querySelectorAll(".popup").forEach(p => p.style.display = "none");
+    }
+
+    function nextPopupLast() {
+      popupLast.style.display = "none";
+      document.getElementById("popupHadiah").style.display = "flex";
+    }
+
+    function showGift() {
+      document.getElementById("popupHadiah").style.display = "none";
+      notifText.innerHTML = "💝 Ini hadiah kecil dariku untuk kamu 💝<br><br>Semoga kamu suka yaa 😘";
+      notifPopup.style.display = "flex";
+      notifClose.textContent = "Awww 💞";
+      createConfetti();
+    }
+
+    document.querySelectorAll('.popup-content').forEach(popup => {
+      const heart = document.createElement('div');
+      heart.classList.add('heartbeat');
+      heart.textContent = '💖';
+      popup.appendChild(heart);
+    });
   </script>
 </body>
 </html>
