@@ -1,104 +1,277 @@
-<script>
-  // Efek hujan hati lembut
-  function createHeart() {
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.textContent = "💖";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.animationDuration = 3 + Math.random() * 2 + "s";
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 5000);
-  }
-  setInterval(createHeart, 400);
+<!DOCTYPE html> 
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Service Cinta 💬</title>
+  <style>
+    body {
+      background: linear-gradient(180deg, #ffdde1, #ee9ca7);
+      font-family: "Poppins", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
 
-  const chatBody = document.getElementById("chatBody");
-  const userInput = document.getElementById("userInput");
+    .chat-box {
+      width: 340px;
+      max-height: 480px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      box-shadow: 0 0 20px rgba(255, 150, 170, 0.4);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: fadeIn 0.6s ease;
+    }
 
-  // Variabel untuk menyimpan nama user
-  let userName = "";
+    .chat-header {
+      background: rgba(255, 192, 203, 0.3);
+      text-align: center;
+      padding: 10px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+    }
 
-  // Tambahkan sapaan awal otomatis
-  window.onload = () => {
-    setTimeout(() => {
-      addMessage("Hallo~ 💌 Apakah ada yang bisa dibantu? Bisakah beritahu nama kamu?", "bot");
-    }, 700);
-  };
+    .chat-body {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
 
-  const responses = [
-    { key: ["siapa kamu", "kamu siapa"], reply: "Aku CS Cinta 💌, tugasnya bantu kamu nemuin rasa yang hilang~" },
-    { key: ["makasih", "thank"], reply: "Sama-sama sayang 💖 jangan lupa balik ke halaman utama ya~" },
-    { key: ["balik", "kembali"], reply: "Okeee~ aku antar balik ya 😍" },
-    { key: ["clue", "bocoran"], reply: "Clue-nya: namanya diawali huruf N... kayak 'Nana' 😘" },
-  ];
+    .message {
+      display: flex;
+      align-items: flex-end;
+      margin: 8px 0;
+      animation: fadeIn 0.3s ease;
+    }
 
-  function sendMessage() {
-    const text = userInput.value.trim();
-    if (!text) return;
+    .message.bot {
+      justify-content: flex-start;
+    }
 
-    addMessage(text, "user");
-    userInput.value = "";
+    .message.user {
+      justify-content: flex-end;
+    }
 
-    const lowerText = text.toLowerCase();
+    .bubble {
+      max-width: 70%;
+      padding: 8px 12px;
+      border-radius: 15px;
+      line-height: 1.4;
+      font-size: 14px;
+    }
 
-    // Jika user belum isi nama
-    if (!userName) {
-      const match = lowerText.match(/nama saya ([a-zA-Z]+)/i);
-      if (match) {
-        userName = match[1].charAt(0).toUpperCase() + match[1].slice(1);
-        setTimeout(() => addMessage(`Hallo ${userName}~ senang bertemu denganmu 💖 Apa yang bisa aku bantu?`, "bot"), 700);
+    .bot .bubble {
+      background: #ffd6e0;
+      color: #fff;
+      border-bottom-left-radius: 2px;
+      margin-left: 6px;
+    }
+
+    .user .bubble {
+      background: #fff5f8;
+      color: #ff5c8d;
+      border-bottom-right-radius: 2px;
+      margin-right: 6px;
+    }
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .chat-input {
+      display: flex;
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      padding: 8px;
+    }
+
+    .chat-input input {
+      flex: 1;
+      border: none;
+      border-radius: 15px;
+      padding: 7px 12px;
+      outline: none;
+      font-family: inherit;
+      font-size: 14px;
+      background: #fff;
+      color: #ff5c8d;
+    }
+
+    .chat-input button {
+      border: none;
+      background: #ff8fa3;
+      color: white;
+      border-radius: 15px;
+      padding: 7px 12px;
+      margin-left: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .chat-input button:hover {
+      background: #ff6b8a;
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Efek hati jatuh */
+    .heart {
+      position: absolute;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 18px;
+      animation: fall 5s linear infinite;
+    }
+    @keyframes fall {
+      0% { transform: translateY(-10px); opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="chat-box">
+    <div class="chat-header">💌 Customer Service Cinta</div>
+    <div class="chat-body" id="chatBody">
+      <div class="message bot">
+        <img src="https://i.ibb.co/4dKkDsh/cs-love.png" alt="bot" class="avatar">
+        <div class="bubble">Hai kamu~ 💖 Ada yang bisa CS Cinta bantu?</div>
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <input type="text" id="userInput" placeholder="Tulis pesanmu di sini..." />
+      <button onclick="sendMessage()">💌</button>
+    </div>
+  </div>
+
+  <script>
+    // Efek hujan hati lembut
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.textContent = "💖";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = 3 + Math.random() * 2 + "s";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 5000);
+    }
+    setInterval(createHeart, 400);
+
+    const chatBody = document.getElementById("chatBody");
+    const userInput = document.getElementById("userInput");
+    let userName = "";
+
+    // Sapaan awal otomatis
+    window.onload = () => {
+      setTimeout(() => {
+        addMessage("Hallo~ 💌 Apakah ada yang bisa dibantu? Bisakah beritahu nama kamu?", "bot");
+      }, 700);
+    };
+
+    const responses = [
+      { key: ["siapa kamu", "kamu siapa"], reply: "Aku CS Cinta 💌, tugasnya bantu kamu nemuin rasa yang hilang~" },
+      { key: ["makasih", "thank"], reply: "Sama-sama sayang 💖 jangan lupa balik ke halaman utama ya~" },
+      { key: ["balik", "kembali"], reply: "Okeee~ aku antar balik ya 😍" },
+      { key: ["clue", "bocoran"], reply: "Clue-nya: namanya diawali huruf N... kayak 'Nana' 😘" },
+    ];
+
+    function sendMessage() {
+      const text = userInput.value.trim();
+      if (!text) return;
+
+      addMessage(text, "user");
+      userInput.value = "";
+
+      const lowerText = text.toLowerCase();
+
+      // Cek jika user ingin ganti nama
+      const changeName = lowerText.match(/(bukan|ganti|sekarang|tapi)\s+(aku|saya)?\s*(?:nama)?\s*(?:saya)?\s*(?:tapi)?\s*([a-zA-Z]+)/i);
+      if (changeName) {
+        const newName = changeName[3].charAt(0).toUpperCase() + changeName[3].slice(1);
+        userName = newName;
+        setTimeout(() => addMessage(`Oke~ mulai sekarang aku panggil kamu ${userName} ya 💞`, "bot"), 700);
         return;
+      }
+
+      // Jika belum ada nama
+      if (!userName) {
+        const match = lowerText.match(/nama saya ([a-zA-Z]+)/i);
+        if (match) {
+          userName = match[1].charAt(0).toUpperCase() + match[1].slice(1);
+          setTimeout(() => addMessage(`Hallo ${userName}~ senang bertemu denganmu 💖 Apa yang bisa aku bantu?`, "bot"), 700);
+          return;
+        } else {
+          setTimeout(() => addMessage("Boleh kasih tahu dulu namamu siapa? 🥰", "bot"), 700);
+          return;
+        }
+      }
+
+      // Jika user menyebut nama atau kata aku/saya
+      if (lowerText.includes(userName.toLowerCase()) || lowerText.includes("aku") || lowerText.includes("saya")) {
+        setTimeout(() => addMessage(`Hehe iya ${userName}~ aku di sini kok 💞`, "bot"), 700);
+        return;
+      }
+
+      // Cek daftar respon lain
+      let response = "Hmm... coba tanya dengan hati 😚";
+      for (const r of responses) {
+        if (r.key.some(k => lowerText.includes(k))) {
+          response = r.reply;
+          break;
+        }
+      }
+
+      setTimeout(() => addMessage(response, "bot"), 700);
+
+      if (lowerText.includes("balik") || lowerText.includes("kembali")) {
+        setTimeout(() => window.location.href = "index.html", 2000);
+      }
+    }
+
+    function addMessage(text, sender) {
+      const msg = document.createElement("div");
+      msg.className = "message " + sender;
+
+      const avatar = document.createElement("img");
+      avatar.className = "avatar";
+      avatar.src = sender === "bot"
+        ? "https://i.ibb.co/4dKkDsh/cs-love.png"
+        : "https://i.ibb.co/Gsvm6tL/user-love.png";
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      bubble.textContent = text;
+
+      if (sender === "bot") {
+        msg.appendChild(avatar);
+        msg.appendChild(bubble);
       } else {
-        setTimeout(() => addMessage("Boleh kasih tahu dulu namamu siapa? 🥰", "bot"), 700);
-        return;
+        msg.appendChild(bubble);
+        msg.appendChild(avatar);
       }
+
+      chatBody.appendChild(msg);
+      chatBody.scrollTop = chatBody.scrollHeight;
     }
-
-    // Setelah nama diketahui, bot mengenali jika user menyebut nama sendiri / aku / saya
-    if (lowerText.includes(userName.toLowerCase()) || lowerText.includes("aku") || lowerText.includes("saya")) {
-      setTimeout(() => addMessage(`Hehe iya ${userName}~ aku di sini kok 💞`, "bot"), 700);
-      return;
-    }
-
-    // Cek respon lain dari daftar
-    let response = "Hmm... coba tanya dengan hati 😚";
-    for (const r of responses) {
-      if (r.key.some(k => lowerText.includes(k))) {
-        response = r.reply;
-        break;
-      }
-    }
-
-    setTimeout(() => addMessage(response, "bot"), 700);
-
-    if (lowerText.includes("balik") || lowerText.includes("kembali")) {
-      setTimeout(() => window.location.href = "index.html", 2000);
-    }
-  }
-
-  function addMessage(text, sender) {
-    const msg = document.createElement("div");
-    msg.className = "message " + sender;
-
-    const avatar = document.createElement("img");
-    avatar.className = "avatar";
-    avatar.src = sender === "bot"
-      ? "https://i.ibb.co/4dKkDsh/cs-love.png"
-      : "https://i.ibb.co/Gsvm6tL/user-love.png";
-
-    const bubble = document.createElement("div");
-    bubble.className = "bubble";
-    bubble.textContent = text;
-
-    if (sender === "bot") {
-      msg.appendChild(avatar);
-      msg.appendChild(bubble);
-    } else {
-      msg.appendChild(bubble);
-      msg.appendChild(avatar);
-    }
-
-    chatBody.appendChild(msg);
-    chatBody.scrollTop = chatBody.scrollHeight;
-  }
-</script>
-            
+  </script>
+</body>
+</html>
