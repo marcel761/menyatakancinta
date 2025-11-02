@@ -70,6 +70,7 @@
       40%, 80% { transform: translateX(8px); }
     }
     .shake { animation: shake 0.4s; }
+
     .heart-particle {
       position: fixed; bottom: 0; font-size: 20px; color: #fff;
       animation: floatUp 4s linear forwards; opacity: 0.8; pointer-events: none;
@@ -78,6 +79,7 @@
       0% { transform: translateY(0) scale(1); opacity: 1; }
       100% { transform: translateY(-100vh) scale(0.5); opacity: 0; }
     }
+
     .loading {
       display: none; position: fixed; inset: 0;
       background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(8px);
@@ -90,11 +92,62 @@
       animation: spin 1s linear infinite;
     }
     @keyframes spin { 100% { transform: rotate(360deg); } }
-    @media (max-width: 480px) {
-      h1 { font-size: 20px; }
-      p { font-size: 13px; }
-      .login-card { padding: 25px 20px; }
-      .heart { font-size: 50px; }
+
+    /* Popup Cinta */
+    .love-popup {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255, 192, 203, 0.25);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 30;
+    }
+    .love-popup.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .love-box {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 30px 25px;
+      max-width: 320px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      animation: popUp 0.5s ease;
+    }
+    @keyframes popUp {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .love-box h2 {
+      font-size: 18px;
+      color: #ff4081;
+      margin-bottom: 10px;
+    }
+    .love-box p {
+      color: #333;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+    .love-box button {
+      background: linear-gradient(90deg, #ff6b9f, #ff9fc2);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    .love-box button:hover {
+      transform: scale(1.05);
     }
   </style>
 </head>
@@ -114,47 +167,52 @@
     <div class="spinner"></div>
   </div>
 
-  <!-- 🎶 Audio Musik -->
+  <!-- Popup Rahasia -->
+  <div class="love-popup" id="lovePopup">
+    <div class="love-box">
+      <h2>💞 Pesan Rahasia 💞</h2>
+      <p id="popupText">Kamu penasaran banget yaa 😜<br>
+      tapi cuma <b>1 orang</b> yang bisa masuk ke hatiku 💖</p>
+      <button id="closePopup">Hehe iya deh 😳</button>
+    </div>
+  </div>
+
   <audio id="loveMusic" src="romantis1.mp3" preload="auto"></audio>
 
   <script>
-    const correctName = "nana"; 
+    const correctName = "nana";
     const btn = document.getElementById("loginBtn");
     const msg = document.getElementById("msg");
     const card = document.getElementById("card");
     const loading = document.getElementById("loading");
     const music = document.getElementById("loveMusic");
+    const popup = document.getElementById("lovePopup");
+    const closePopup = document.getElementById("closePopup");
+    const popupText = document.getElementById("popupText");
+
+    let wrongCount = 0;
 
     const wrongMessages = [
       "Hmm... kayaknya kamu bukan orang yang aku maksud 😜",
       "Ups, coba lagi deh~ kayaknya bukan kamu 😅",
       "Hehe, salah nih... orang yang aku maksud lebih spesial 💕",
       "Eits, nama kamu manis sih tapi bukan itu 😚",
-      "Coba lagi yaa, aku yakin kamu bisa 😍",
-      "Belum bener nih, tapi aku suka semangat kamu 🤭",
-      "Hmm... bukan ini, tapi jangan nyerah yaa 💖",
-      "Salah~ tapi aku suka caramu mencoba 😘"
+      "Coba lagi yaa, aku yakin kamu bisa 😍"
     ];
 
-    // Kirim notifikasi ke Telegram
     function kirimTelegram(nama) {
-      const botToken = "8326504454:AAFOeLnHSpPW585gKuXseNWSgcvwj4rUGW8"; 
-      const chatId = "7230859799"; 
-
+      const botToken = "ISI_TOKEN_MU";
+      const chatId = "ISI_CHAT_ID_MU";
       const now = new Date();
       const waktu = now.toLocaleString("id-ID", { timeZone: "Asia/Jakarta" });
       const text = `💌 *${nama.toUpperCase()} sudah login!* Siap-siap deg-degan 😳\n🕒 Waktu login: ${waktu}`;
-
       fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chat_id: chatId, text, parse_mode: "Markdown" })
-      })
-      .then(() => console.log("Pesan Telegram terkirim 💖"))
-      .catch(err => console.error("Gagal kirim Telegram:", err));
+      });
     }
 
-    // Efek partikel hati
     function createHeart() {
       const heart = document.createElement("div");
       heart.classList.add("heart-particle");
@@ -164,41 +222,59 @@
       document.body.appendChild(heart);
       setTimeout(() => heart.remove(), 4000);
     }
-    setInterval(createHeart, 700);
 
-    // Login button event
     btn.addEventListener("click", () => {
       const name = document.getElementById("nameInput").value.trim();
 
-      if (name === "") {
-        msg.textContent = "Nama belum diisi 😅";
-      } else if (name.toLowerCase() === correctName.toLowerCase()) {
+      if (!name) return msg.textContent = "Nama belum diisi 😅";
+
+      if (name.toLowerCase() === correctName) {
         msg.textContent = "Hai " + name + " 💖 Tunggu sebentar ya...";
-        msg.style.color = "#fff";
-
-        // 🔔 Kirim notifikasi Telegram
-        kirimTelegram(name);
-
-        // 🎵 Mulai musik saat tombol diklik
         music.volume = 0.5;
         music.play();
 
-        // Tampilkan loading
-        setTimeout(() => {
-          loading.style.display = "flex";
-        }, 800);
+        for (let i = 0; i < 30; i++) setTimeout(createHeart, i * 100);
+        kirimTelegram(name);
 
-        // Setelah loading selesai
+        setTimeout(() => loading.style.display = "flex", 800);
+
+        // 💌 Munculkan popup cinta setelah loading
         setTimeout(() => {
-          window.location.href = "love.html"; 
-        }, 8000);
+          loading.style.display = "none";
+          popupText.innerHTML = `Hai ${name} 💕<br>
+          Aku cuma mau bilang... selamat yaa udah berhasil masuk 😳<br>
+          Siap-siap yaa, aku mau megatakan sesuatu sama kamu 💞`;
+          popup.classList.add("active");
+        }, 6000);
+
+        // Setelah popup ditutup → pindah ke love.html
+        closePopup.onclick = () => {
+          popup.classList.remove("active");
+          setTimeout(() => {
+            window.location.href = "love.html";
+          }, 1000);
+        };
       } else {
-        const randomMsg = wrongMessages[Math.floor(Math.random() * wrongMessages.length)];
-        msg.textContent = randomMsg;
+        wrongCount++;
+        msg.textContent = wrongMessages[Math.floor(Math.random() * wrongMessages.length)];
         msg.style.color = "#ffe0f0";
         card.classList.add("shake");
         setTimeout(() => card.classList.remove("shake"), 400);
       }
+      // 🎁 Mode Rahasia: Jika salah nama 3x
+      if (wrongCount === 3) {
+        setTimeout(() => {
+          popupText.innerHTML = `Kamu penasaran banget yaa 😜<br>
+          tapi cuma <b>1 orang</b> yang bisa masuk ke hatiku 💞`;
+          popup.classList.add("active");
+        }, 500);
+
+        closePopup.onclick = () => {
+          popup.classList.remove("active");
+          wrongCount = 0; // reset agar bisa muncul lagi nanti
+        };
+      }
+    
     });
   </script>
 </body>
