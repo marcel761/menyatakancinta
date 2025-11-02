@@ -1281,7 +1281,7 @@
       .not-loaded * {
         animation-play-state: paused !important;
       }
-      /* ==== Responsive design untuk tampilan mobile ==== */
+    /* Responsive design untuk tampilan mobile */
 @media (max-width: 600px) {
   body {
     align-items: center;
@@ -1289,48 +1289,25 @@
     justify-content: center;
   }
 
-  .title {
-    font-size: 24px;
-    top: 10px;
-    text-align: center;
-    width: 100%;
+  .flowers {
+    transform: scale(0.6);
+    margin-top: 80px;
   }
 
-  .reloadBtn {
-    position: fixed;
-    top: 60px;
-    right: 10px;
-    padding: 8px 16px;
-    font-size: 12px;
-    border-radius: 8px;
+  .title {
+    font-size: 26px;
+    text-align: center;
+    margin-top: 60px;
   }
 
   .btn-back {
-    position: fixed;
-    bottom: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #ff5f7e;
-    color: white;
-    text-decoration: none;
-    padding: 10px 20px;
-    border-radius: 25px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    transition: 0.3s;
-  }
-
-  .btn-back:hover {
-    background-color: #ff7995;
-  }
-
-  .flowers {
-    transform: scale(0.55); /* perkecil agar muat di layar */
+    top: 10px;
+    left: 10px;
+    padding: 8px 14px;
+    font-size: 13px;
   }
 }
-
-</style>
+ </style>
   </head>
 
   <body class="not-loaded">
