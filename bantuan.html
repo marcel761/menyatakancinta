@@ -178,13 +178,15 @@
 
     const chatBody = document.getElementById("chatBody");
     const userInput = document.getElementById("userInput");
-    let userName = "";
+    let userName = localStorage.getItem("userName") || "";
 
     // Sapaan awal otomatis
     window.onload = () => {
-      setTimeout(() => {
-        addMessage("Hallo~ 💌 Apakah ada yang bisa dibantu? Bisakah beritahu nama kamu?", "bot");
-      }, 700);
+      if (userName) {
+        setTimeout(() => addMessage(`Hai ${userName}~ 💞 senang bisa ngobrol lagi dengannya~`, "bot"), 700);
+      } else {
+        setTimeout(() => addMessage("Hallo~ 💌 Apakah ada yang bisa dibantu? Bisakah beritahu nama kamu?", "bot"), 700);
+      }
     };
 
     const responses = [
@@ -200,23 +202,32 @@
 
       addMessage(text, "user");
       userInput.value = "";
-
       const lowerText = text.toLowerCase();
 
-      // Cek jika user ingin ganti nama
-      const changeName = lowerText.match(/(bukan|ganti|sekarang|tapi)\s+(aku|saya)?\s*(?:nama)?\s*(?:saya)?\s*(?:tapi)?\s*([a-zA-Z]+)/i);
-      if (changeName) {
-        const newName = changeName[3].charAt(0).toUpperCase() + changeName[3].slice(1);
-        userName = newName;
-        setTimeout(() => addMessage(`Oke~ mulai sekarang aku panggil kamu ${userName} ya 💞`, "bot"), 700);
+      // Jika user langsung sebut nama (misal: "Nana")
+      if (!userName && /^[a-zA-Z]+$/.test(text)) {
+        userName = capitalize(text);
+        localStorage.setItem("userName", userName);
+        setTimeout(() => addMessage(`Hai ${userName}~ nama yang cantik 😍 Apa kabar hari ini?`, "bot"), 700);
         return;
       }
 
-      // Jika belum ada nama
+      // Deteksi perubahan nama
+      const changeName = lowerText.match(/bukan\s+([a-zA-Z]+)\s+tapi\s+([a-zA-Z]+)/i);
+      if (changeName) {
+        const newName = capitalize(changeName[2]);
+        userName = newName;
+        localStorage.setItem("userName", userName);
+        setTimeout(() => addMessage(`Oke~ jadi namamu ${userName} sekarang ya 💞`, "bot"), 700);
+        return;
+      }
+
+      // Jika belum tahu nama
       if (!userName) {
         const match = lowerText.match(/nama saya ([a-zA-Z]+)/i);
         if (match) {
-          userName = match[1].charAt(0).toUpperCase() + match[1].slice(1);
+          userName = capitalize(match[1]);
+          localStorage.setItem("userName", userName);
           setTimeout(() => addMessage(`Hallo ${userName}~ senang bertemu denganmu 💖 Apa yang bisa aku bantu?`, "bot"), 700);
           return;
         } else {
@@ -225,13 +236,13 @@
         }
       }
 
-      // Jika user menyebut nama atau kata aku/saya
+      // Jika user menyebut dirinya sendiri
       if (lowerText.includes(userName.toLowerCase()) || lowerText.includes("aku") || lowerText.includes("saya")) {
         setTimeout(() => addMessage(`Hehe iya ${userName}~ aku di sini kok 💞`, "bot"), 700);
         return;
       }
 
-      // Cek daftar respon lain
+      // Cek daftar respon
       let response = "Hmm... coba tanya dengan hati 😚";
       for (const r of responses) {
         if (r.key.some(k => lowerText.includes(k))) {
@@ -247,6 +258,7 @@
       }
     }
 
+    // Fungsi tambah pesan ke chat
     function addMessage(text, sender) {
       const msg = document.createElement("div");
       msg.className = "message " + sender;
@@ -271,6 +283,10 @@
 
       chatBody.appendChild(msg);
       chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function capitalize(name) {
+      return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
     }
   </script>
 </body>
