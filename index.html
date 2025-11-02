@@ -149,6 +149,21 @@
     .love-box button:hover {
       transform: scale(1.05);
     }
+    .help-link {
+  display: inline-block;
+  margin-top: 5px;
+  font-size: 13px;
+  color: #ffeef4;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+.help-link:hover {
+  opacity: 1;
+  text-decoration: underline;
+  transform: scale(1.05);
+}
+
   </style>
 </head>
 <body>
@@ -160,6 +175,8 @@
     <input type="text" id="nameInput" placeholder="Nama kamu..." autocomplete="off" />
     <button id="loginBtn">Masuk 💌</button>
     <div class="msg" id="msg"></div>
+   <span class="help-link" id="helpLink" style="display: none;">Bantuan?</span>
+
   </div>
 
   <div class="loading" id="loading">
@@ -260,6 +277,13 @@
         msg.style.color = "#ffe0f0";
         card.classList.add("shake");
         setTimeout(() => card.classList.remove("shake"), 400);
+        const helpLink = document.getElementById("helpLink");
+  helpLink.style.display = "inline-block";
+
+  // 🔹 Jika diklik, arahkan ke bantuan.html
+  helpLink.onclick = () => {
+    window.location.href = "bantuan.html";
+  };
       }
       // 🎁 Mode Rahasia: Jika salah nama 3x
       if (wrongCount === 3) {
