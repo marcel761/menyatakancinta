@@ -104,39 +104,18 @@
       0% { transform: translateY(0) rotate(0deg); opacity: 1; }
       100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
     }
+
     /* 🎀 Toggle switch animasi lembut */
-#romance-toggle:checked + div {
-  background-color: #ec4899;
-}
+    #romance-toggle:checked + div {
+      background-color: #ec4899;
+    }
 
-#romance-toggle:checked + div .dot {
-  transform: translateX(1.25rem);
-  transition: transform 0.3s cubic-bezier(0.4, 1.4, 0.4, 1);
-}
-
+    #romance-toggle:checked + div .dot {
+      transform: translateX(1.25rem);
+      transition: transform 0.3s cubic-bezier(0.4, 1.4, 0.4, 1);
+    }
   </style>
 </head>
-<!-- 🔹 Popup Ganti Avatar -->
-<div id="avatar-popup" class="fixed inset-0 bg-black/70 flex items-center justify-center hidden z-50">
-  <div class="bg-white text-gray-800 rounded-2xl p-6 w-80 text-center shadow-2xl animate-fadeIn">
-    <h2 class="text-lg font-semibold mb-4">🧑‍🎨 Pilih Jenis Avatar</h2>
-    <div class="flex justify-around mb-6">
-      <button id="avatar-cewek" class="bg-pink-500 hover:bg-pink-400 px-4 py-2 rounded-xl font-medium text-white transition">👩 Cewek</button>
-      <button id="avatar-cowok" class="bg-blue-500 hover:bg-blue-400 px-4 py-2 rounded-xl font-medium text-white transition">👨 Cowok</button>
-    </div>
-    <button id="close-avatar-popup" class="text-gray-500 hover:text-gray-700 text-sm">Tutup</button>
-  </div>
-</div>
-
-<style>
-  @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  .animate-fadeIn {
-    animation: fadeIn 0.3s ease;
-  }
-</style>
 
 <body>
   <!-- Header -->
@@ -158,28 +137,19 @@
     </ul>
     
     <!-- 🔹 Bagian bawah menu -->
-<div class="absolute bottom-6 left-0 w-full px-5 space-y-3">
-
-  <!-- 🧑‍🎨 Ganti Avatar -->
-  <button id="ganti-avatar" class="w-full text-left hover:text-pink-700 flex items-center justify-between">
-    <span>🧑‍🎨 Ganti Avatar</span>
-    <span class="text-sm text-gray-600"></span>
-  </button>
-
-  <hr class="border-pink-400 mb-3">
-
-  <!-- 💖 Romance Mode -->
-  <div class="flex items-center justify-between">
-    <span>💖 Romance Mode</span>
-    <label class="inline-flex items-center cursor-pointer">
-      <input type="checkbox" id="romance-toggle" class="sr-only peer">
-      <div class="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-pink-500 relative transition">
-        <div class="dot absolute top-[2px] left-[2px] bg-white w-5 h-5 rounded-full transition-transform peer-checked:translate-x-full"></div>
+    <div class="absolute bottom-6 left-0 w-full px-5 space-y-3">
+      <hr class="border-pink-400 mb-3">
+      <!-- 💖 Romance Mode -->
+      <div class="flex items-center justify-between">
+        <span>💖 Romance Mode</span>
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" id="romance-toggle" class="sr-only peer">
+          <div class="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-pink-500 relative transition">
+            <div class="dot absolute top-[2px] left-[2px] bg-white w-5 h-5 rounded-full transition-transform peer-checked:translate-x-full"></div>
+          </div>
+        </label>
       </div>
-    </label>
-  </div>
-</div>
-
+    </div>
   </aside>
 
   <div id="overlay" class="hidden fixed inset-0 bg-black bg-opacity-40 z-40"></div>
@@ -194,29 +164,6 @@
     <input id="user-input" type="text" placeholder="Ketik pesan..." class="flex-1 p-3 rounded-xl outline-none focus:ring-2 focus:ring-pink-400" />
     <button id="send-btn" class="hover:bg-pink-700 px-4 py-3 rounded-xl font-medium text-white">Kirim</button>
   </footer>
-<script>
-  const gantiAvatarBtn = document.getElementById("ganti-avatar");
-  const avatarPopup = document.getElementById("avatar-popup");
-  const closeAvatarPopup = document.getElementById("close-avatar-popup");
-  const avatarCewek = document.getElementById("avatar-cewek");
-  const avatarCowok = document.getElementById("avatar-cowok");
-
-  gantiAvatarBtn.addEventListener("click", () => {
-    avatarPopup.classList.remove("hidden");
-  });
-
-  closeAvatarPopup.addEventListener("click", () => {
-    avatarPopup.classList.add("hidden");
-  });
-
-  avatarCewek.addEventListener("click", () => {
-    alert("👩 Pilihan avatar cewek akan muncul di sini (belum aktif)");
-  });
-
-  avatarCowok.addEventListener("click", () => {
-    alert("👨 Pilihan avatar cowok akan muncul di sini (belum aktif)");
-  });
-</script>
 
   <script>
     const botAvatar = "robot.png";   // ganti dengan path gambar bot kamu
@@ -243,11 +190,11 @@
       userMessage.className = "flex justify-end items-start chat-message space-x-2";
       userMessage.innerHTML = `
        <div class='chat-bubble bg-blue-600 p-3 rounded-2xl rounded-tr-none'>
-     <p>${text}</p>
-     </div>
-   <img src="${userAvatar}" alt="User" class="w-8 h-8 rounded-full self-end">
-    `;
-     chatContainer.appendChild(userMessage);
+         <p>${text}</p>
+       </div>
+       <img src="${userAvatar}" alt="User" class="w-8 h-8 rounded-full self-end">
+      `;
+      chatContainer.appendChild(userMessage);
       userInput.value = "";
       scrollToBottom();
 
@@ -265,7 +212,8 @@
       typingDiv.innerHTML = `<div class='chat-bubble bg-gray-700 p-3 rounded-2xl rounded-tl-none flex items-center space-x-1 typing-dots'>
         <span class="w-2 h-2 bg-gray-400 rounded-full inline-block"></span>
         <span class="w-2 h-2 bg-gray-400 rounded-full inline-block"></span>
-        <span class="w-2 h-2 bg-gray-400 rounded-full inline-block"></span></div>`;
+        <span class="w-2 h-2 bg-gray-400 rounded-full inline-block"></span>
+      </div>`;
       chatContainer.appendChild(typingDiv);
       scrollToBottom();
     }
@@ -279,12 +227,12 @@
       const botMessage = document.createElement("div");
       botMessage.className = "flex items-start chat-message space-x-2";
       botMessage.innerHTML = `
-      <img src="${botAvatar}" alt="Bot" class="w-8 h-8 rounded-full self-end">
-      <div class='chat-bubble bg-gray-700 p-3 rounded-2xl rounded-tl-none'>
-       <p>${text}</p>
-      </div>
+        <img src="${botAvatar}" alt="Bot" class="w-8 h-8 rounded-full self-end">
+        <div class='chat-bubble bg-gray-700 p-3 rounded-2xl rounded-tl-none'>
+         <p>${text}</p>
+        </div>
       `;
-     chatContainer.appendChild(botMessage);
+      chatContainer.appendChild(botMessage);
       scrollToBottom();
     }
 
