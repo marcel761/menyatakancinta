@@ -1,293 +1,201 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Customer Service Cinta 💬</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bantuan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body {
-      background: linear-gradient(180deg, #ffdde1, #ee9ca7);
-      font-family: "Poppins", sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      overflow: hidden;
+    html, body {
+      height: 100%;
+      scroll-behavior: smooth;
+    }
+    #chat-container {
+      scrollbar-width: thin;
+      scrollbar-color: #4b5563 #111827;
+      position: relative;
+    }
+    @keyframes dot-blink {
+      0%, 80%, 100% { opacity: 0.2; }
+      40% { opacity: 1; }
+    }
+    .typing-dots span {
+      animation: dot-blink 1.4s infinite;
+      animation-delay: calc(var(--i) * 0.2s);
+    }
+    #side-menu {
+      transform: translateX(-100%);
+      transition: transform 0.35s ease-in-out;
+    }
+    #side-menu.active {
+      transform: translateX(0);
     }
 
-    .chat-box {
-      width: 340px;
-      max-height: 480px;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-      border-radius: 18px;
-      box-shadow: 0 0 20px rgba(255, 150, 170, 0.4);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      animation: fadeIn 0.6s ease;
-    }
-
-    .chat-header {
-      background: rgba(255, 192, 203, 0.3);
-      text-align: center;
-      padding: 10px;
-      color: #fff;
-      font-weight: 600;
-      font-size: 16px;
-      letter-spacing: 0.5px;
-    }
-
-    .chat-body {
-      flex: 1;
-      padding: 10px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .message {
-      display: flex;
-      align-items: flex-end;
-      margin: 8px 0;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .message.bot {
-      justify-content: flex-start;
-    }
-
-    .message.user {
-      justify-content: flex-end;
-    }
-
-    .bubble {
-      max-width: 70%;
-      padding: 8px 12px;
-      border-radius: 15px;
-      line-height: 1.4;
-      font-size: 14px;
-    }
-
-    .bot .bubble {
-      background: #ffd6e0;
-      color: #fff;
-      border-bottom-left-radius: 2px;
-      margin-left: 6px;
-    }
-
-    .user .bubble {
-      background: #fff5f8;
-      color: #ff5c8d;
-      border-bottom-right-radius: 2px;
-      margin-right: 6px;
-    }
-
-    .avatar {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .chat-input {
-      display: flex;
-      border-top: 1px solid rgba(255, 255, 255, 0.3);
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(8px);
-      padding: 8px;
-    }
-
-    .chat-input input {
-      flex: 1;
-      border: none;
-      border-radius: 15px;
-      padding: 7px 12px;
-      outline: none;
-      font-family: inherit;
-      font-size: 14px;
-      background: #fff;
-      color: #ff5c8d;
-    }
-
-    .chat-input button {
-      border: none;
-      background: #ff8fa3;
-      color: white;
-      border-radius: 15px;
-      padding: 7px 12px;
-      margin-left: 6px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .chat-input button:hover {
-      background: #ff6b8a;
-      transform: scale(1.05);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Efek hati jatuh */
-    .heart {
+    /* 💬 Placeholder tengah */
+    #chat-placeholder {
       position: absolute;
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 18px;
-      animation: fall 5s linear infinite;
-    }
-    @keyframes fall {
-      0% { transform: translateY(-10px); opacity: 1; }
-      100% { transform: translateY(100vh); opacity: 0; }
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: #9ca3af;
+      font-size: 0.95rem;
+      opacity: 0.75;
+      user-select: none;
+      transition: opacity 0.3s ease;
     }
   </style>
 </head>
-<body>
+<body class="bg-gray-900 text-gray-100 flex flex-col h-screen">
 
-  <div class="chat-box">
-    <div class="chat-header">💌 Customer Service Cinta</div>
-    <div class="chat-body" id="chatBody">
-      <div class="message bot">
-        <img src="https://i.ibb.co/4dKkDsh/cs-love.png" alt="bot" class="avatar">
-        <div class="bubble">Hai kamu~ 💖 Ada yang bisa CS Cinta bantu?</div>
-      </div>
-    </div>
+  <!-- Header -->
+  <header class="bg-gray-800 text-white py-3 px-4 shadow-md flex items-center justify-center relative">
+    <button id="menu-btn" class="absolute left-4 focus:outline-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+    <h1 class="text-lg font-semibold text-center">💬 Customer Service</h1>
+    <a href="index.html" class="absolute right-4 text-sm text-blue-400 hover:text-blue-300">Kembali</a>
+  </header>
 
-    <div class="chat-input">
-      <input type="text" id="userInput" placeholder="Tulis pesanmu di sini..." />
-      <button onclick="sendMessage()">💌</button>
-    </div>
-  </div>
+  <!-- Sidebar Menu -->
+  <aside id="side-menu" class="fixed top-0 left-0 w-64 h-full bg-gray-800 text-gray-200 p-5 shadow-lg z-50">
+    <h2 class="text-lg font-semibold mb-4"> Menu</h2>
+    <ul class="space-y-3">
+      <li><button id="new-chat" class="w-full text-left hover:text-blue-400">🆕 Obrolan Baru</button></li>
+    </ul>
+  </aside>
 
+  <!-- Overlay -->
+  <div id="overlay" class="hidden fixed inset-0 bg-black bg-opacity-40 z-40"></div>
+
+  <!-- Chat Container -->
+  <main id="chat-container" class="flex-1 overflow-y-auto p-3 space-y-4 relative">
+    <!-- Placeholder -->
+    <div id="chat-placeholder">💭 Mulai obrolan dengan Asisten Marcel...</div>
+  </main>
+
+  <!-- Input Chat -->
+  <footer class="bg-gray-800 p-3 flex items-center space-x-2 border-t border-gray-700">
+    <input 
+      id="user-input" 
+      type="text" 
+      placeholder="Ketik pesan..." 
+      class="flex-1 bg-gray-700 text-white p-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    <button 
+      id="send-btn" 
+      class="bg-blue-600 hover:bg-blue-500 px-4 py-3 rounded-xl font-medium">
+      Kirim
+    </button>
+  </footer>
+
+  <!-- Script -->
   <script>
-    // Efek hujan hati lembut
-    function createHeart() {
-      const heart = document.createElement("div");
-      heart.className = "heart";
-      heart.textContent = "💖";
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.animationDuration = 3 + Math.random() * 2 + "s";
-      document.body.appendChild(heart);
-      setTimeout(() => heart.remove(), 5000);
-    }
-    setInterval(createHeart, 400);
+    const chatContainer = document.getElementById("chat-container");
+    const sendBtn = document.getElementById("send-btn");
+    const userInput = document.getElementById("user-input");
+    const menuBtn = document.getElementById("menu-btn");
+    const sideMenu = document.getElementById("side-menu");
+    const overlay = document.getElementById("overlay");
+    const newChatBtn = document.getElementById("new-chat");
 
-    const chatBody = document.getElementById("chatBody");
-    const userInput = document.getElementById("userInput");
-    let userName = localStorage.getItem("userName") || "";
-
-    // Sapaan awal otomatis
-    window.onload = () => {
-      if (userName) {
-        setTimeout(() => addMessage(`Hai ${userName}~ 💞 senang bisa ngobrol lagi dengannya~`, "bot"), 700);
-      } else {
-        setTimeout(() => addMessage("Hallo~ 💌 Apakah ada yang bisa dibantu? Bisakah beritahu nama kamu?", "bot"), 700);
-      }
-    };
-
-    const responses = [
-      { key: ["siapa kamu", "kamu siapa"], reply: "Aku CS Cinta 💌, tugasnya bantu kamu nemuin rasa yang hilang~" },
-      { key: ["makasih", "thank"], reply: "Sama-sama sayang 💖 jangan lupa balik ke halaman utama ya~" },
-      { key: ["balik", "kembali"], reply: "Okeee~ aku antar balik ya 😍" },
-      { key: ["clue", "bocoran"], reply: "Clue-nya: namanya diawali huruf N... kayak 'Nana' 😘" },
-    ];
+    sendBtn.addEventListener("click", sendMessage);
+    userInput.addEventListener("keypress", e => {
+      if (e.key === "Enter") sendMessage();
+    });
 
     function sendMessage() {
       const text = userInput.value.trim();
-      if (!text) return;
+      if (text === "") return;
 
-      addMessage(text, "user");
+      // Ambil ulang elemen placeholder (supaya tetap sinkron jika direset)
+      const placeholder = document.getElementById("chat-placeholder");
+      if (placeholder) placeholder.remove();
+
+      const userMessage = document.createElement("div");
+      userMessage.className = "flex items-start justify-end space-x-2";
+      userMessage.innerHTML = `
+        <div class='bg-blue-600 p-3 rounded-2xl rounded-tr-none max-w-[80%] sm:max-w-md'>
+          <p>${text}</p>
+        </div>
+      `;
+      chatContainer.appendChild(userMessage);
       userInput.value = "";
-      const lowerText = text.toLowerCase();
+      scrollToBottom();
 
-      // Jika user langsung sebut nama (misal: "Nana")
-      if (!userName && /^[a-zA-Z]+$/.test(text)) {
-        userName = capitalize(text);
-        localStorage.setItem("userName", userName);
-        setTimeout(() => addMessage(`Hai ${userName}~ nama yang cantik 😍 Apa kabar hari ini?`, "bot"), 700);
-        return;
-      }
-
-      // Deteksi perubahan nama
-      const changeName = lowerText.match(/bukan\s+([a-zA-Z]+)\s+tapi\s+([a-zA-Z]+)/i);
-      if (changeName) {
-        const newName = capitalize(changeName[2]);
-        userName = newName;
-        localStorage.setItem("userName", userName);
-        setTimeout(() => addMessage(`Oke~ jadi namamu ${userName} sekarang ya 💞`, "bot"), 700);
-        return;
-      }
-
-      // Jika belum tahu nama
-      if (!userName) {
-        const match = lowerText.match(/nama saya ([a-zA-Z]+)/i);
-        if (match) {
-          userName = capitalize(match[1]);
-          localStorage.setItem("userName", userName);
-          setTimeout(() => addMessage(`Hallo ${userName}~ senang bertemu denganmu 💖 Apa yang bisa aku bantu?`, "bot"), 700);
-          return;
-        } else {
-          setTimeout(() => addMessage("Boleh kasih tahu dulu namamu siapa? 🥰", "bot"), 700);
-          return;
-        }
-      }
-
-      // Jika user menyebut dirinya sendiri
-      if (lowerText.includes(userName.toLowerCase()) || lowerText.includes("aku") || lowerText.includes("saya")) {
-        setTimeout(() => addMessage(`Hehe iya ${userName}~ aku di sini kok 💞`, "bot"), 700);
-        return;
-      }
-
-      // Cek daftar respon
-      let response = "Hmm... coba tanya dengan hati 😚";
-      for (const r of responses) {
-        if (r.key.some(k => lowerText.includes(k))) {
-          response = r.reply;
-          break;
-        }
-      }
-
-      setTimeout(() => addMessage(response, "bot"), 700);
-
-      if (lowerText.includes("balik") || lowerText.includes("kembali")) {
-        setTimeout(() => window.location.href = "index.html", 2000);
-      }
+      showTypingAnimation();
+      setTimeout(() => {
+        removeTypingAnimation();
+        showBotMessage("Terima kasih atas pesanmu! Fitur balasan otomatis akan segera hadir 🤖");
+      }, 2000);
     }
 
-    // Fungsi tambah pesan ke chat
-    function addMessage(text, sender) {
-      const msg = document.createElement("div");
-      msg.className = "message " + sender;
-
-      const avatar = document.createElement("img");
-      avatar.className = "avatar";
-      avatar.src = sender === "bot"
-        ? "https://i.ibb.co/4dKkDsh/cs-love.png"
-        : "https://i.ibb.co/Gsvm6tL/user-love.png";
-
-      const bubble = document.createElement("div");
-      bubble.className = "bubble";
-      bubble.textContent = text;
-
-      if (sender === "bot") {
-        msg.appendChild(avatar);
-        msg.appendChild(bubble);
-      } else {
-        msg.appendChild(bubble);
-        msg.appendChild(avatar);
-      }
-
-      chatBody.appendChild(msg);
-      chatBody.scrollTop = chatBody.scrollHeight;
+    function showTypingAnimation() {
+      const typingDiv = document.createElement("div");
+      typingDiv.id = "typing";
+      typingDiv.className = "flex items-start space-x-2";
+      typingDiv.innerHTML = `
+        <div class='bg-gray-700 p-3 rounded-2xl rounded-tl-none max-w-[60%] sm:max-w-md flex items-center space-x-1 typing-dots'>
+          <span class="w-2 h-2 bg-gray-400 rounded-full inline-block" style="--i:1"></span>
+          <span class="w-2 h-2 bg-gray-400 rounded-full inline-block" style="--i:2"></span>
+          <span class="w-2 h-2 bg-gray-400 rounded-full inline-block" style="--i:3"></span>
+        </div>
+      `;
+      chatContainer.appendChild(typingDiv);
+      scrollToBottom();
     }
 
-    function capitalize(name) {
-      return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    function removeTypingAnimation() {
+      const typingDiv = document.getElementById("typing");
+      if (typingDiv) typingDiv.remove();
     }
+
+    function showBotMessage(text) {
+      const botMessage = document.createElement("div");
+      botMessage.className = "flex items-start space-x-2";
+      botMessage.innerHTML = `
+        <div class='bg-gray-700 p-3 rounded-2xl rounded-tl-none max-w-[80%] sm:max-w-md'>
+          <p>${text}</p>
+        </div>
+      `;
+      chatContainer.appendChild(botMessage);
+      scrollToBottom();
+    }
+
+    function scrollToBottom() {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    // 🌟 Toggle Menu dengan animasi slide
+    menuBtn.addEventListener("click", () => {
+      sideMenu.classList.toggle("active");
+      overlay.classList.toggle("hidden");
+    });
+    overlay.addEventListener("click", () => {
+      sideMenu.classList.remove("active");
+      overlay.classList.add("hidden");
+    });
+
+    // 🆕 Obrolan Baru
+    newChatBtn.addEventListener("click", () => {
+      chatContainer.innerHTML = `
+        <div id="chat-placeholder">💭 Mulai obrolan dengan Asisten Marcel...</div>
+      `;
+      sideMenu.classList.remove("active");
+      overlay.classList.add("hidden");
+    });
+
+    // 🔄 Saat halaman direfresh, pastikan placeholder tetap muncul
+    window.addEventListener("load", () => {
+      const placeholder = document.getElementById("chat-placeholder");
+      if (placeholder) placeholder.style.display = "block";
+    });
+    backBtn.addEventListener("click", () => {
+      window.location.href = "index.html";
+    });
+
   </script>
 </body>
 </html>
