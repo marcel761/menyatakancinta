@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -166,44 +167,162 @@
   </footer>
 
   <script>
-    const botAvatar = "robot.png";   // ganti dengan path gambar bot kamu
-    const userAvatar = "user.png"; // ganti dengan path gambar user kamu
-    const chatContainer = document.getElementById("chat-container");
-    const sendBtn = document.getElementById("send-btn");
-    const userInput = document.getElementById("user-input");
-    const menuBtn = document.getElementById("menu-btn");
-    const sideMenu = document.getElementById("side-menu");
-    const overlay = document.getElementById("overlay");
-    const newChatBtn = document.getElementById("new-chat");
-    const romanceToggle = document.getElementById("romance-toggle");
+  const botAvatar = "robot.png";  
+  const userAvatar = "user.png";  
+  const chatContainer = document.getElementById("chat-container");
+  const sendBtn = document.getElementById("send-btn");
+  const userInput = document.getElementById("user-input");
+  const menuBtn = document.getElementById("menu-btn");
+  const sideMenu = document.getElementById("side-menu");
+  const overlay = document.getElementById("overlay");
+  const newChatBtn = document.getElementById("new-chat");
+  const romanceToggle = document.getElementById("romance-toggle");
 
-    sendBtn.addEventListener("click", sendMessage);
-    userInput.addEventListener("keypress", e => { if (e.key === "Enter") sendMessage(); });
+  // ===== Rule-based Sapaan =====
+  const sapaanUmum = ["hai", "halo", "hei", "hey", "hay", "heii", "heyyy", "woi", "oi", "yo"];
+  const responUmum = [
+    "Hai juga! 👋 Ada yang bisa aku bantu?",
+    "Halo juga! Senang disapa 😄",
+    "Hey hey! Gimana kabarnya hari ini?",
+    "Hai! Aku di sini siap bantu kamu ✨"
+  ];
 
-    function sendMessage() {
-      const text = userInput.value.trim();
-      if (text === "") return;
-      const placeholder = document.getElementById("chat-placeholder");
-      if (placeholder) placeholder.remove();
+  const sapaanFormal = ["selamat pagi", "selamat siang", "selamat sore", "selamat malam"];
+  function responFormal(text) {
+    if (text.includes("pagi")) return "Selamat pagi juga ☀️ Semoga harimu menyenangkan!";
+    if (text.includes("siang")) return "Selamat siang juga 😄 Semoga hari ini produktif!";
+    if (text.includes("sore")) return "Selamat sore 🌇 Waktunya bersantai!";
+    if (text.includes("malam")) return "Selamat malam 🌙 Waktunya istirahat ya!";
+  }
 
-      const userMessage = document.createElement("div");
-      userMessage.className = "flex justify-end items-start chat-message space-x-2";
-      userMessage.innerHTML = `
-       <div class='chat-bubble bg-blue-600 p-3 rounded-2xl rounded-tr-none'>
-         <p>${text}</p>
-       </div>
-       <img src="${userAvatar}" alt="User" class="w-8 h-8 rounded-full self-end">
-      `;
-      chatContainer.appendChild(userMessage);
-      userInput.value = "";
-      scrollToBottom();
+  const sapaanReligius = ["assalamualaikum", "assalamu'alaikum", "shalom", "om swastiastu", "salam sejahtera"];
+  function responReligius(text) {
+    if (text.includes("assalam")) return "Waalaikumsalam 😊";
+    if (text.includes("shalom")) return "Shalom juga 🙏";
+    if (text.includes("swastiastu")) return "Om Shanti Shanti Om 🙏";
+    if (text.includes("salam sejahtera")) return "Salam sejahtera juga 🙏";
+  }
 
-      showTypingAnimation();
-      setTimeout(() => {
-        removeTypingAnimation();
-        showBotMessage("Terima kasih atas pesanmu! Fitur balasan otomatis akan segera hadir 🤖");
-      }, 2000);
+  const aliasSapaan = {
+    "p": "hai",
+    "pa": "hai",
+    "permisi": "hai",
+    "misi": "hai",
+    "bro": "hai",
+    "cuuy": "hai",
+    "cuy": "hai",
+    "gess": "hai",
+    "ges": "hai",
+    "bray": "hai",
+    "bang": "hai",
+    "kak": "hai",
+    "mas": "hai",
+    "sis": "hai",
+    "pagiii": "selamat pagi",
+    "haloo": "halo",
+    "halloo": "halo",
+    "halooo": "halo"
+    
+  };
+
+  // 🔹 Tambahan: Preprocessor slang gabungan
+  function normalizeSlangSentence(sentence) {
+    sentence = sentence
+    .toLowerCase()
+    .replace(/[^\w\s\u00C0-\u017F]/g, "") // buang tanda baca & emoji
+    .trim();
+
+  const words = sentence.split(/\s+/);
+  const converted = words.map(w => aliasSapaan[w] || w);
+
+  const joined = converted.join(" ");
+  if (joined.match(/(hai|halo|selamat pagi|assalamualaikum|shalom|swastiastu|salam sejahtera)/)) {
+    if (joined.includes("assalamualaikum")) return "assalamualaikum";
+    if (joined.includes("selamat pagi")) return "selamat pagi";
+    if (joined.includes("halo")) return "halo";
+    if (joined.includes("shalom")) return "shalom";
+    if (joined.includes("swastiastu")) return "om swastiastu";
+    if (joined.includes("salam sejahtera")) return "salam sejahtera";
+    return "hai"; // fallback umum
+  }
+  return joined;
+  }
+
+  // ✅ Pindahkan fungsi similarity ke atas (biar bisa dipakai global)
+  function levenshtein(a, b) {
+    const m = [];
+    for (let i = 0; i <= b.length; i++) m[i] = [i];
+    for (let j = 0; j <= a.length; j++) m[0][j] = j;
+    for (let i = 1; i <= b.length; i++) {
+      for (let j = 1; j <= a.length; j++) {
+        m[i][j] = b[i - 1] === a[j - 1]
+          ? m[i - 1][j - 1]
+          : Math.min(m[i - 1][j - 1] + 1, m[i][j - 1] + 1, m[i - 1][j] + 1);
+      }
     }
+    return m[b.length][a.length];
+  }
+
+  function similarity(a, b) {
+    const longer = a.length > b.length ? a : b;
+    const shorter = a.length > b.length ? b : a;
+    const dist = levenshtein(longer, shorter);
+    return (longer.length - dist) / longer.length;
+  }
+
+  function isSimilarToAny(text, list, threshold = 0.7) {
+    return list.some(item => similarity(text, item) >= threshold);
+  }
+
+  // 🧠 Fungsi utama chatbot
+  function getBotReply(text) {
+    text = text.toLowerCase().replace(/[^\w\s]/gi, "").trim();
+    if (aliasSapaan[text]) text = aliasSapaan[text];
+
+    if (isSimilarToAny(text, sapaanUmum)) {
+      return responUmum[Math.floor(Math.random() * responUmum.length)];
+    }
+    if (isSimilarToAny(text, sapaanFormal)) {
+      return responFormal(text);
+    }
+    if (isSimilarToAny(text, sapaanReligius)) {
+      return responReligius(text);
+    }
+    return "Terima kasih atas pesanmu! Fitur lainnya masih dalam pengembangan 🤖";
+  }
+
+  sendBtn.addEventListener("click", sendMessage);
+  userInput.addEventListener("keypress", e => { if (e.key === "Enter") sendMessage(); });
+
+  function sendMessage() {
+    let text = userInput.value.trim();
+    if (text === "") return;
+    const placeholder = document.getElementById("chat-placeholder");
+    if (placeholder) placeholder.remove();
+
+    const userMessage = document.createElement("div");
+    userMessage.className = "flex justify-end items-start chat-message space-x-2";
+    userMessage.innerHTML = `
+     <div class='chat-bubble bg-blue-600 p-3 rounded-2xl rounded-tr-none'>
+       <p>${text}</p>
+     </div>
+     <img src="${userAvatar}" alt="User" class="w-8 h-8 rounded-full self-end">
+    `;
+    chatContainer.appendChild(userMessage);
+    userInput.value = "";
+    scrollToBottom();
+
+    showTypingAnimation();
+    setTimeout(() => {
+      removeTypingAnimation();
+      text = normalizeSlangSentence(text);
+      const reply = getBotReply(text);
+      showBotMessage(reply);
+    }, 1000);
+  }
+</script>
+
+<script>
 
     function showTypingAnimation() {
       const typingDiv = document.createElement("div");
