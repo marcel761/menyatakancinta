@@ -104,6 +104,16 @@
       0% { transform: translateY(0) rotate(0deg); opacity: 1; }
       100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
     }
+    /* 🎀 Toggle switch animasi lembut */
+#romance-toggle:checked + div {
+  background-color: #ec4899;
+}
+
+#romance-toggle:checked + div .dot {
+  transform: translateX(1.25rem);
+  transition: transform 0.3s cubic-bezier(0.4, 1.4, 0.4, 1);
+}
+
   </style>
 </head>
 
@@ -155,6 +165,8 @@
   </footer>
 
   <script>
+    const botAvatar = "robot.png";   // ganti dengan path gambar bot kamu
+    const userAvatar = "user.png"; // ganti dengan path gambar user kamu
     const chatContainer = document.getElementById("chat-container");
     const sendBtn = document.getElementById("send-btn");
     const userInput = document.getElementById("user-input");
@@ -174,9 +186,14 @@
       if (placeholder) placeholder.remove();
 
       const userMessage = document.createElement("div");
-      userMessage.className = "flex justify-end chat-message";
-      userMessage.innerHTML = `<div class='chat-bubble bg-blue-600 p-3 rounded-2xl rounded-tr-none'><p>${text}</p></div>`;
-      chatContainer.appendChild(userMessage);
+      userMessage.className = "flex justify-end items-start chat-message space-x-2";
+      userMessage.innerHTML = `
+       <div class='chat-bubble bg-blue-600 p-3 rounded-2xl rounded-tr-none'>
+     <p>${text}</p>
+     </div>
+   <img src="${userAvatar}" alt="User" class="w-8 h-8 rounded-full self-end">
+    `;
+     chatContainer.appendChild(userMessage);
       userInput.value = "";
       scrollToBottom();
 
@@ -206,9 +223,14 @@
 
     function showBotMessage(text) {
       const botMessage = document.createElement("div");
-      botMessage.className = "flex items-start chat-message";
-      botMessage.innerHTML = `<div class='chat-bubble bg-gray-700 p-3 rounded-2xl rounded-tl-none'><p>${text}</p></div>`;
-      chatContainer.appendChild(botMessage);
+      botMessage.className = "flex items-start chat-message space-x-2";
+      botMessage.innerHTML = `
+      <img src="${botAvatar}" alt="Bot" class="w-8 h-8 rounded-full self-end">
+      <div class='chat-bubble bg-gray-700 p-3 rounded-2xl rounded-tl-none'>
+       <p>${text}</p>
+      </div>
+      `;
+     chatContainer.appendChild(botMessage);
       scrollToBottom();
     }
 
