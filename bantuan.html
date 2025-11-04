@@ -204,8 +204,12 @@
           <p>${text}</p>
         </div>
       `;
-      chatContainer.appendChild(botMessage);
-      scrollToBottom();
+       chatContainer.appendChild(botMessage);
+
+      // 🟦 Tambahan agar otomatis scroll ke pesan bot
+      setTimeout(() => {
+        botMessage.scrollIntoView({ behavior: "smooth", block: "end" });
+      }, 50);
     }
 
     function scrollToBottom() {
